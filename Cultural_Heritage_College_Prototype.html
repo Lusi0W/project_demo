@@ -1,0 +1,2182 @@
+<!DOCTYPE html><html lang="zh-TW"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文化傳承學院 - 非物質文化遺產學習平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        'heritage-gold': '#D4AF37',
+                        'heritage-red': '#DC143C'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        
+        .bounce-in {
+            animation: bounceIn 0.6s ease-out;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #5D5CDE 0%, #8B5CF6 100%);
+        }
+        
+        .certificate-bg {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 8px solid #D4AF37;
+        }
+        
+        .dark .certificate-bg {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+        }
+    </style>
+<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.3f7572448765332f3047.js"></script></head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- 主容器 -->
+    <div class="min-h-screen">
+        <!-- 導航欄 -->
+        <nav class="bg-primary text-white p-4 shadow-lg">
+            <div class="max-w-4xl mx-auto flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-heritage-gold rounded-full flex items-center justify-center">
+                        🏛️
+                    </div>
+                    <h1 class="text-xl font-bold">文化傳承學院</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showMarketplace()" class="text-white hover:text-heritage-gold transition-colors duration-300 flex items-center space-x-1">
+                        <span>🛒</span>
+                        <span class="hidden md:inline">工藝市集</span>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-heritage-gold">🔥</span>
+                        <span id="streak">0</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-yellow-300">💎</span>
+                        <span id="score">0</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主要內容 -->
+        <main class="max-w-4xl mx-auto p-4">
+            <!-- 歡迎畫面 -->
+            <div id="welcomeScreen" class="text-center py-12">
+                <div class="bounce-in">
+                    <div class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center text-6xl">
+                        🎭
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4">歡迎來到文化傳承學院</h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+                        透過互動式學習探索世界各地的非物質文化遺產，從傳統技藝到民俗表演，讓文化在遊戲中傳承！
+                    </p>
+                    <button onclick="startLearning()" class="bg-primary hover:bg-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        開始學習之旅 🚀
+                    </button>
+                </div>
+            </div>
+
+            <!-- 課程選擇畫面 -->
+            <div id="courseScreen" class="hidden">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4">選擇學習路徑</h2>
+                    <div class="bg-gray-100 dark:bg-gray-800 rounded-full h-4 mb-6">
+                        <div id="overallProgress" class="progress-bar h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="courseList">
+                    <!-- 課程卡片將由JavaScript生成 -->
+                </div>
+
+                <div class="mt-8 text-center" id="certificateSection" style="display: none;">
+                    <div class="bg-heritage-gold bg-opacity-20 rounded-lg p-6 mb-4">
+                        <h3 class="text-xl font-bold mb-2">🎉 恭喜您完成所有課程！</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">您已經掌握了豐富的非物質文化遺產知識</p>
+                        <button onclick="showNameInputDialog(generateCertificateWithName)" class="bg-heritage-gold hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            下載畢業證書 📜
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 學習畫面 -->
+            <div id="learningScreen" class="hidden">
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <button onclick="backToCourses()" class="text-primary hover:text-purple-700 flex items-center space-x-2">
+                            <span>←</span>
+                            <span>返回課程</span>
+                        </button>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <span>❤️</span>
+                                <span id="lives">3</span>
+                            </div>
+                            <div id="questionProgress" class="text-sm text-gray-600 dark:text-gray-300"></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                        <div id="progressBar" class="progress-bar h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="questionContainer" class="slide-up">
+                    <!-- 問題內容將由JavaScript生成 -->
+                </div>
+
+                <div id="feedback" class="hidden mt-6 p-4 rounded-lg text-center">
+                    <div id="feedbackContent"></div>
+                    <button id="nextButton" onclick="nextQuestion()" class="mt-4 bg-primary hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                        繼續
+                    </button>
+                </div>
+            </div>
+
+            <!-- 課程完成畫面 -->
+            <div id="completionScreen" class="hidden text-center py-12">
+                <div class="bounce-in">
+                    <div class="w-24 h-24 mx-auto mb-6 bg-green-500 rounded-full flex items-center justify-center text-4xl">
+                        ✨
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4">課程完成！</h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+                        恭喜您完成了 <span id="completedCourseName" class="font-semibold text-primary"></span> 課程
+                    </p>
+                    <div class="mb-8">
+                        <div class="text-2xl font-bold text-heritage-gold mb-2">+<span id="earnedScore">100</span> 💎</div>
+                        <div class="text-lg">連續學習 <span id="currentStreak" class="font-semibold">1</span> 天 🔥</div>
+                    </div>
+                    
+                    <!-- 課程證書下載 -->
+                    <div class="bg-heritage-gold bg-opacity-20 rounded-lg p-6 mb-6 max-w-md mx-auto">
+                        <h3 class="text-lg font-bold mb-3">🎓 您已獲得課程證書！</h3>
+                        <button onclick="showNameInputDialog(generateCourseCertificateWithName)" class="bg-heritage-gold hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 mb-3">
+                            下載 <span id="certificateCourseName"></span> 證書 📜
+                        </button>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            證書將包含您在此課程中的學習成果
+                        </p>
+                    </div>
+                    
+                    <!-- 師父推薦區域 -->
+                    <div class="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900 rounded-lg p-6 mb-6 max-w-2xl mx-auto">
+                        <h3 class="text-xl font-bold mb-4 text-center">🎯 尋找您的專屬師父</h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 text-center">
+                            準備好深入學習了嗎？我們為您推薦在此領域經驗豐富的師父，開始您的進修之旅！
+                        </p>
+                        <button onclick="showMasterRecommendations()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+                            🧑‍🏫 探索師父配對
+                        </button>
+                    </div>
+                    
+                    <button onclick="backToCourses()" class="bg-primary hover:bg-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300">
+                        繼續學習
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 自定義模態框 -->
+    <div id="customModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 暗色模式設置
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // 學習數據
+        let userProgress = {
+            score: 0,
+            streak: 1,
+            lives: 3,
+            completedCourses: [],
+            currentCourse: null,
+            currentQuestion: 0,
+            userName: '' // 儲存用戶姓名
+        };
+
+        // 師父資料庫
+        const masters = {
+            'traditional-crafts': [
+                {
+                    id: 'master-craft-1',
+                    name: '李景泰',
+                    title: '景泰藍工藝大師',
+                    experience: '45年',
+                    location: '北京',
+                    specialties: ['景泰藍', '銅胎掐絲琺瑯', '傳統金屬工藝'],
+                    description: '國家級非物質文化遺產代表性傳承人，師承景泰藍世家，作品多次在國際展覽中獲獎。擅長傳統與現代結合的創新技法。',
+                    contact: 'lijingtai@heritage.cn',
+                    achievements: ['國家工藝美術大師', '聯合國教科文組織工藝與民間藝術大師', '中國工藝美術終身成就獎'],
+                    teachingStyle: '注重基礎功底培養，強調手工技藝的精準性，採用一對一指導方式'
+                },
+                {
+                    id: 'master-craft-2',
+                    name: '田中美智子',
+                    title: '日本折紙藝術家',
+                    experience: '30年',
+                    location: '東京',
+                    specialties: ['傳統折紙', '創意折紙', '折紙雕塑'],
+                    description: '日本折紙協會認證講師，專精複雜幾何折紙和動植物造型，教學經驗豐富。',
+                    contact: 'tanaka.michiko@origami.jp',
+                    achievements: ['日本折紙協會最高榮譽獎', '國際折紙奧林匹克金獎', '日本文化廳長官表彰'],
+                    teachingStyle: '循序漸進教學法，從簡單基礎開始，培養學生空間思維和創造力'
+                }
+            ],
+            'folk-music': [
+                {
+                    id: 'master-music-1',
+                    name: '王古琴',
+                    title: '古琴演奏家',
+                    experience: '38年',
+                    location: '蘇州',
+                    specialties: ['古琴演奏', '古典音樂理論', '琴歌演唱'],
+                    description: '中國古琴學會理事，師承廣陵派，精通多種古琴流派技法，致力於古琴文化的傳承與推廣。',
+                    contact: 'wang.guqin@classical.cn',
+                    achievements: ['中國民族音樂最高獎', '古琴藝術終身成就獎', '聯合國和平藝術家'],
+                    teachingStyle: '注重音樂內涵和文化底蘊，結合古詩詞教學，培養學生的藝術修養'
+                },
+                {
+                    id: 'master-music-2',
+                    name: 'Seán Ó Riada',
+                    title: '愛爾蘭傳統音樂大師',
+                    experience: '42年',
+                    location: '都柏林',
+                    specialties: ['愛爾蘭舞曲', '傳統樂器演奏', '民族音樂編曲'],
+                    description: '愛爾蘭國家音樂學院教授，致力於保護和發展愛爾蘭傳統音樂，培養了眾多優秀音樂家。',
+                    contact: 'sean.oriada@irish-music.ie',
+                    achievements: ['愛爾蘭文化遺產獎', '歐洲民族音樂貢獻獎', '國際凱爾特音樂節終身成就獎'],
+                    teachingStyle: '重視實踐演奏，鼓勵學生參與傳統音樂會，在實踐中學習和傳承'
+                }
+            ],
+            'festivals': [
+                {
+                    id: 'master-festival-1',
+                    name: '陳慶春',
+                    title: '春節民俗專家',
+                    experience: '35年',
+                    location: '福建',
+                    specialties: ['春節習俗', '剪紙藝術', '民間故事'],
+                    description: '民俗學博士，專研中國傳統節慶文化，參與多項國家級文化保護項目，著有《中華節慶文化大全》。',
+                    contact: 'chen.qingchun@folklore.cn',
+                    achievements: ['中國民俗學會終身會員', '國家社科基金重大項目主持人', '文化部非遺保護先進個人'],
+                    teachingStyle: '理論與實踐結合，帶領學生參與實地調研和節慶活動策劃'
+                },
+                {
+                    id: 'master-festival-2',
+                    name: 'Rajesh Holi',
+                    title: '印度色彩節傳承人',
+                    experience: '28年',
+                    location: '新德里',
+                    specialties: ['印度節慶', '傳統舞蹈', '宗教儀式'],
+                    description: '印度文化部認證的傳統節慶專家，致力於向世界推廣印度豐富的節慶文化，經常受邀到各國進行文化交流。',
+                    contact: 'rajesh.holi@indian-culture.in',
+                    achievements: ['印度文化大使', '國際文化交流貢獻獎', '聯合國文化多樣性推廣使者'],
+                    teachingStyle: '注重文化背景介紹，透過親身體驗讓學生理解節慶的深層意義'
+                }
+            ],
+            'culinary-arts': [
+                {
+                    id: 'master-culinary-1',
+                    name: 'Pierre Dubois',
+                    title: '法式料理大師',
+                    experience: '40年',
+                    location: '巴黎',
+                    specialties: ['經典法式料理', '醬料製作', '烹飪技法'],
+                    description: '米其林三星主廚，法國廚師協會榮譽會員，致力於傳承法式料理的精髓，培養新一代廚師人才。',
+                    contact: 'pierre.dubois@cuisine-francaise.fr',
+                    achievements: ['法國榮譽軍團勳章', '國際烹飪大師賽冠軍', '法式料理文化大使'],
+                    teachingStyle: '嚴格要求基本功，注重食材選擇和處理技巧，培養學生的味覺敏感度'
+                },
+                {
+                    id: 'master-culinary-2',
+                    name: '田中一郎',
+                    title: '懷石料理名師',
+                    experience: '33年',
+                    location: '京都',
+                    specialties: ['懷石料理', '茶道', '季節料理'],
+                    description: '京都老舖料亭第三代傳人，日本料理協會理事，將季節美學與料理藝術完美結合。',
+                    contact: 'tanaka.ichiro@kaiseki.jp',
+                    achievements: ['日本料理文化功勞者', '京都文化財保護貢獻賞', '國際和食推廣大使'],
+                    teachingStyle: '重視季節感和美學表現，教導學生用心感受自然與食材的和諧'
+                }
+            ],
+            'storytelling': [
+                {
+                    id: 'master-story-1',
+                    name: 'Hans Müller',
+                    title: '格林童話研究專家',
+                    experience: '32年',
+                    location: '法蘭克福',
+                    specialties: ['德國民間故事', '童話研究', '口述傳統'],
+                    description: '德國民間文學學會主席，格林兄弟研究所所長，致力於德國民間故事的收集、整理和傳播。',
+                    contact: 'hans.muller@grimm-institute.de',
+                    achievements: ['德國文學貢獻獎', '歐洲民間文學研究傑出成就獎', '聯合國教科文組織文化遺產保護專家'],
+                    teachingStyle: '注重故事的文化內涵和教育意義，培養學生的敘事技巧和表達能力'
+                },
+                {
+                    id: 'master-story-2',
+                    name: '劉志民',
+                    title: '中國民間故事傳承人',
+                    experience: '45年',
+                    location: '山西',
+                    specialties: ['中國神話傳說', '評書藝術', '方言故事'],
+                    description: '國家級非物質文化遺產代表性傳承人，精通各地方言說書技藝，會講千餘個傳統故事。',
+                    contact: 'liu.zhimin@stories.cn',
+                    achievements: ['中國曲藝牡丹獎終身成就獎', '國家非遺傳承人', '中國民間文藝最高獎'],
+                    teachingStyle: '口傳心授，注重語言韻律和表演技巧，培養學生的記憶力和表現力'
+                }
+            ],
+            'martial-arts': [
+                {
+                    id: 'master-martial-1',
+                    name: '陳太極',
+                    title: '太極拳宗師',
+                    experience: '50年',
+                    location: '河南溫縣',
+                    specialties: ['陳式太極拳', '太極理論', '內功修煉'],
+                    description: '陳式太極拳第十九代傳人，國際太極拳聯合會主席，將太極拳推廣到世界各地。',
+                    contact: 'chen.taiji@taichi.cn',
+                    achievements: ['太極拳終身成就獎', '國際武術殿堂成員', '世界太極拳冠軍賽總裁判長'],
+                    teachingStyle: '注重內外兼修，強調理論與實踐結合，因材施教循序漸進'
+                },
+                {
+                    id: 'master-martial-2',
+                    name: '山田空手',
+                    title: '空手道師範',
+                    experience: '35年',
+                    location: '沖繩',
+                    specialties: ['傳統空手道', '武術哲學', '身心修煉'],
+                    description: '沖繩空手道協會會長，致力於保持空手道的傳統精神，培養了眾多國際冠軍。',
+                    contact: 'yamada.karate@okinawa.jp',
+                    achievements: ['空手道十段', '全日本空手道連盟名譽會長', '國際空手道聯盟技術委員'],
+                    teachingStyle: '重視武德修養和精神鍛煉，教導學生正確的武術態度和人生哲學'
+                }
+            ]
+        };
+
+        // 課程數據
+        const courses = [
+            {
+                id: 'traditional-crafts',
+                title: '傳統手工藝',
+                description: '探索世界各地的傳統手工技藝',
+                icon: '🏺',
+                color: 'bg-red-500',
+                questions: [
+                    {
+                        type: 'multiple',
+                        question: '中國的景泰藍工藝起源於哪個朝代？',
+                        options: ['明朝', '元朝', '清朝', '宋朝'],
+                        correct: 1,
+                        explanation: '景泰藍又稱琺瑯，起源於元朝，在明朝景泰年間達到鼎盛，因此得名。'
+                    },
+                    {
+                        type: 'multiple',
+                        question: '日本的折紙藝術被稱為什麼？',
+                        options: ['Ikebana', 'Origami', 'Sumi-e', 'Bonsai'],
+                        correct: 1,
+                        explanation: 'Origami（折紙）是日本的傳統摺紙藝術，通過摺疊紙張創造各種形狀。'
+                    },
+                    {
+                        type: 'matching',
+                        question: '將以下傳統工藝與其原產地配對：',
+                        pairs: [
+                            { left: '威尼斯玻璃', right: '意大利' },
+                            { left: '波斯地毯', right: '伊朗' },
+                            { left: '印度絲綢', right: '印度' }
+                        ],
+                        explanation: '這些都是各地著名的傳統工藝，代表了不同文化的精湛技藝。'
+                    }
+                ]
+            },
+            {
+                id: 'folk-music',
+                title: '民族音樂',
+                description: '聆聽世界各地的傳統音樂文化',
+                icon: '🎵',
+                color: 'bg-blue-500',
+                questions: [
+                    {
+                        type: 'multiple',
+                        question: '古琴在中國音樂史上有多少年的歷史？',
+                        options: ['1000年', '2000年', '3000年', '4000年'],
+                        correct: 2,
+                        explanation: '古琴有著超過3000年的悠久歷史，是中國最古老的彈撥樂器之一。'
+                    },
+                    {
+                        type: 'multiple',
+                        question: '愛爾蘭的傳統舞蹈被稱為什麼？',
+                        options: ['Flamenco', 'Irish Dance', 'Waltz', 'Tango'],
+                        correct: 1,
+                        explanation: 'Irish Dance（愛爾蘭舞）是愛爾蘭的傳統民族舞蹈，以其獨特的腳步技巧聞名。'
+                    },
+                    {
+                        type: 'matching',
+                        question: '將以下樂器與其對應的文化配對：',
+                        pairs: [
+                            { left: '薩克斯管', right: '爵士樂' },
+                            { left: '二胡', right: '中國民樂' },
+                            { left: '烏德琴', right: '阿拉伯音樂' }
+                        ],
+                        explanation: '每種樂器都承載著特定文化的音樂傳統和情感表達。'
+                    }
+                ]
+            },
+            {
+                id: 'festivals',
+                title: '傳統節慶',
+                description: '了解世界各地的傳統節日慶典',
+                icon: '🎊',
+                color: 'bg-green-500',
+                questions: [
+                    {
+                        type: 'multiple',
+                        question: '中國春節期間，人們會在門上貼什麼來祈求好運？',
+                        options: ['春聯', '年畫', '剪紙', '以上皆是'],
+                        correct: 3,
+                        explanation: '春節期間，中國人會貼春聯、年畫和剪紙等裝飾品來迎接新年，祈求好運。'
+                    },
+                    {
+                        type: 'multiple',
+                        question: '印度的色彩節（Holi）主要慶祝什麼？',
+                        options: ['豐收', '春天到來', '新年', '愛情'],
+                        correct: 1,
+                        explanation: 'Holi（色彩節）是印度慶祝春天到來的節日，人們會互相撒彩色粉末慶祝。'
+                    },
+                    {
+                        type: 'matching',
+                        question: '將以下節日與其特色活動配對：',
+                        pairs: [
+                            { left: '巴西嘉年華', right: '桑巴舞' },
+                            { left: '德國啤酒節', right: '喝啤酒' },
+                            { left: '日本櫻花祭', right: '賞櫻花' }
+                        ],
+                        explanation: '每個節日都有其獨特的慶祝方式，體現了不同文化的特色。'
+                    }
+                ]
+            },
+            {
+                id: 'culinary-arts',
+                title: '烹飪藝術',
+                description: '品味世界各地的傳統美食文化',
+                icon: '🍜',
+                color: 'bg-yellow-500',
+                questions: [
+                    {
+                        type: 'multiple',
+                        question: '法國料理中的「五大母醬」不包括哪一種？',
+                        options: ['白醬', '棕醬', '番茄醬', '咖哩醬'],
+                        correct: 3,
+                        explanation: '法式料理的五大母醬包括白醬、棕醬、番茄醬、蛋黃醬和白奶油醬，不包括咖哩醬。'
+                    },
+                    {
+                        type: 'multiple',
+                        question: '日本的懷石料理強調什麼理念？',
+                        options: ['量多味美', '季節性與美感', '快速製作', '香辣口味'],
+                        correct: 1,
+                        explanation: '懷石料理強調季節性食材和視覺美感，體現了日本料理的精緻文化。'
+                    },
+                    {
+                        type: 'matching',
+                        question: '將以下傳統食物與其原產地配對：',
+                        pairs: [
+                            { left: '比薩', right: '意大利' },
+                            { left: '壽司', right: '日本' },
+                            { left: '塔可', right: '墨西哥' }
+                        ],
+                        explanation: '這些美食都是各國文化的重要組成部分，承載著深厚的歷史傳統。'
+                    }
+                ]
+            },
+            {
+                id: 'storytelling',
+                title: '口述傳統',
+                description: '聆聽世界各地的民間故事與傳說',
+                icon: '📚',
+                color: 'bg-purple-500',
+                questions: [
+                    {
+                        type: 'multiple',
+                        question: '《格林童話》收集了哪個國家的民間故事？',
+                        options: ['法國', '德國', '英國', '丹麥'],
+                        correct: 1,
+                        explanation: '《格林童話》是由德國的格林兄弟收集整理的德國民間故事集。'
+                    },
+                    {
+                        type: 'multiple',
+                        question: '中國四大民間傳說不包括哪一個？',
+                        options: ['牛郎織女', '孟姜女', '白蛇傳', '嫦娥奔月'],
+                        correct: 3,
+                        explanation: '中國四大民間傳說是牛郎織女、孟姜女哭長城、白蛇傳和梁山伯與祝英台。'
+                    },
+                    {
+                        type: 'matching',
+                        question: '將以下神話人物與其文化背景配對：',
+                        pairs: [
+                            { left: '雷神索爾', right: '北歐神話' },
+                            { left: '阿波羅', right: '希臘神話' },
+                            { left: '孫悟空', right: '中國神話' }
+                        ],
+                        explanation: '這些神話人物都是各自文化中的重要角色，體現了不同文明的想像力。'
+                    }
+                ]
+            },
+            {
+                id: 'martial-arts',
+                title: '武術傳統',
+                description: '探索世界各地的傳統武術文化',
+                icon: '🥋',
+                color: 'bg-orange-500',
+                questions: [
+                    {
+                        type: 'multiple',
+                        question: '太極拳起源於中國的哪個省份？',
+                        options: ['河南', '湖北', '江蘇', '浙江'],
+                        correct: 0,
+                        explanation: '太極拳起源於中國河南省溫縣陳家溝，是中國傳統武術的重要流派。'
+                    },
+                    {
+                        type: 'multiple',
+                        question: '空手道起源於哪個地區？',
+                        options: ['日本本土', '沖繩', '朝鮮', '中國'],
+                        correct: 1,
+                        explanation: '空手道起源於沖繩，後來傳播到日本本土並發展成現代空手道。'
+                    },
+                    {
+                        type: 'matching',
+                        question: '將以下武術與其原產地配對：',
+                        pairs: [
+                            { left: '跆拳道', right: '韓國' },
+                            { left: '柔道', right: '日本' },
+                            { left: '卡波拉', right: '巴西' }
+                        ],
+                        explanation: '每種武術都體現了其文化背景和哲學思想，是身心修煉的藝術。'
+                    }
+                ]
+            }
+        ];
+
+        function startLearning() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('courseScreen').classList.remove('hidden');
+            generateCourseList();
+            updateUI();
+        }
+
+        function generateCourseList() {
+            const courseList = document.getElementById('courseList');
+            courseList.innerHTML = '';
+
+            courses.forEach(course => {
+                const isCompleted = userProgress.completedCourses.includes(course.id);
+                const courseCard = document.createElement('div');
+                courseCard.className = `${course.color} rounded-lg p-6 text-white cursor-pointer transform transition-all duration-300 hover:scale-105 shadow-lg ${isCompleted ? 'opacity-75' : ''}`;
+                courseCard.onclick = () => startCourse(course.id);
+
+                courseCard.innerHTML = `
+                    <div class="text-4xl mb-4">${course.icon}</div>
+                    <h3 class="text-xl font-bold mb-2">${course.title}</h3>
+                    <p class="text-sm opacity-90 mb-4">${course.description}</p>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm">${course.questions.length} 個問題</span>
+                        ${isCompleted ? '<span class="text-lg">✅</span>' : '<span class="text-lg">🔒</span>'}
+                    </div>
+                    ${isCompleted ? `
+                        <div class="border-t border-white border-opacity-30 pt-3">
+                            <button onclick="requestCourseCertificate('${course.id}'); event.stopPropagation();" 
+                                    class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-2 rounded text-sm font-medium transition-all duration-300">
+                                📜 下載證書
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+
+                courseList.appendChild(courseCard);
+            });
+
+            updateOverallProgress();
+        }
+
+        function updateOverallProgress() {
+            const totalCourses = courses.length;
+            const completedCount = userProgress.completedCourses.length;
+            const progressPercentage = (completedCount / totalCourses) * 100;
+            
+            document.getElementById('overallProgress').style.width = `${progressPercentage}%`;
+
+            if (completedCount === totalCourses) {
+                document.getElementById('certificateSection').style.display = 'block';
+            }
+        }
+
+        function startCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            userProgress.currentCourse = course;
+            userProgress.currentQuestion = 0;
+            userProgress.lives = 3;
+
+            document.getElementById('courseScreen').classList.add('hidden');
+            document.getElementById('learningScreen').classList.remove('hidden');
+
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const course = userProgress.currentCourse;
+            const questionIndex = userProgress.currentQuestion;
+            const question = course.questions[questionIndex];
+
+            document.getElementById('questionProgress').textContent = `${questionIndex + 1} / ${course.questions.length}`;
+            document.getElementById('progressBar').style.width = `${((questionIndex + 1) / course.questions.length) * 100}%`;
+
+            const container = document.getElementById('questionContainer');
+            container.innerHTML = '';
+
+            if (question.type === 'multiple') {
+                container.innerHTML = `
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-6">${question.question}</h3>
+                        <div class="space-y-3">
+                            ${question.options.map((option, index) => `
+                                <button onclick="selectAnswer(${index})" 
+                                        class="answer-option w-full text-left p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-primary transition-all duration-300 text-base">
+                                    ${option}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (question.type === 'matching') {
+                const shuffledRight = [...question.pairs.map(p => p.right)].sort(() => Math.random() - 0.5);
+                container.innerHTML = `
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-6">${question.question}</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <h4 class="font-semibold text-center mb-4">項目</h4>
+                                ${question.pairs.map((pair, index) => `
+                                    <div class="matching-left p-3 bg-white dark:bg-gray-700 rounded border-2 border-gray-200 dark:border-gray-600 text-center text-base"
+                                         data-value="${pair.right}">
+                                        ${pair.left}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="space-y-3">
+                                <h4 class="font-semibold text-center mb-4">選項</h4>
+                                ${shuffledRight.map(option => `
+                                    <div class="matching-right p-3 bg-primary text-white rounded cursor-pointer hover:bg-purple-700 transition-all duration-300 text-center text-base"
+                                         onclick="selectMatching(this, '${option}')">
+                                        ${option}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <button onclick="checkMatching()" 
+                                    class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold text-base">
+                                檢查答案
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('feedback').classList.add('hidden');
+            updateUI();
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = userProgress.currentCourse.questions[userProgress.currentQuestion];
+            const isCorrect = selectedIndex === question.correct;
+
+            const options = document.querySelectorAll('.answer-option');
+            options.forEach((option, index) => {
+                option.disabled = true;
+                if (index === question.correct) {
+                    option.classList.add('border-green-500', 'bg-green-100', 'dark:bg-green-900');
+                } else if (index === selectedIndex && !isCorrect) {
+                    option.classList.add('border-red-500', 'bg-red-100', 'dark:bg-red-900');
+                }
+            });
+
+            showFeedback(isCorrect, question.explanation);
+        }
+
+        let matchingSelections = {};
+
+        function selectMatching(element, value) {
+            // 移除其他選中狀態
+            document.querySelectorAll('.matching-right').forEach(el => {
+                el.classList.remove('bg-purple-800');
+                el.classList.add('bg-primary');
+            });
+
+            element.classList.remove('bg-primary');
+            element.classList.add('bg-purple-800');
+            
+            // 清除之前的選擇
+            matchingSelections = {};
+            
+            // 等待用戶點擊左側項目
+            document.querySelectorAll('.matching-left').forEach(leftEl => {
+                leftEl.onclick = () => {
+                    const expectedValue = leftEl.dataset.value;
+                    matchingSelections[expectedValue] = value;
+                    leftEl.style.backgroundColor = '#5D5CDE';
+                    leftEl.style.color = 'white';
+                    leftEl.innerHTML += ` → ${value}`;
+                    leftEl.onclick = null;
+                };
+            });
+        }
+
+        function checkMatching() {
+            const question = userProgress.currentCourse.questions[userProgress.currentQuestion];
+            let allCorrect = true;
+
+            question.pairs.forEach(pair => {
+                if (matchingSelections[pair.right] !== pair.right) {
+                    allCorrect = false;
+                }
+            });
+
+            showFeedback(allCorrect, question.explanation);
+        }
+
+        function showFeedback(isCorrect, explanation) {
+            const feedback = document.getElementById('feedback');
+            const feedbackContent = document.getElementById('feedbackContent');
+
+            if (isCorrect) {
+                userProgress.score += 20;
+                feedbackContent.innerHTML = `
+                    <div class="text-green-600 dark:text-green-400 text-xl font-bold mb-2">
+                        ✅ 答對了！
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300">${explanation}</p>
+                `;
+                feedback.className = 'mt-6 p-4 rounded-lg text-center bg-green-100 dark:bg-green-900';
+            } else {
+                userProgress.lives--;
+                feedbackContent.innerHTML = `
+                    <div class="text-red-600 dark:text-red-400 text-xl font-bold mb-2">
+                        ❌ 答錯了
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300">${explanation}</p>
+                `;
+                feedback.className = 'mt-6 p-4 rounded-lg text-center bg-red-100 dark:bg-red-900';
+
+                if (userProgress.lives <= 0) {
+                    showCustomModal('遊戲結束', '很遺憾，您已經沒有生命值了。請重新開始這個課程。', () => {
+                        backToCourses();
+                    });
+                    return;
+                }
+            }
+
+            feedback.classList.remove('hidden');
+            updateUI();
+        }
+
+        function nextQuestion() {
+            userProgress.currentQuestion++;
+            
+            if (userProgress.currentQuestion >= userProgress.currentCourse.questions.length) {
+                completeCourse();
+            } else {
+                showQuestion();
+            }
+        }
+
+        function completeCourse() {
+            const courseId = userProgress.currentCourse.id;
+            if (!userProgress.completedCourses.includes(courseId)) {
+                userProgress.completedCourses.push(courseId);
+                userProgress.score += 100;
+            }
+
+            document.getElementById('learningScreen').classList.add('hidden');
+            document.getElementById('completionScreen').classList.remove('hidden');
+            
+            document.getElementById('completedCourseName').textContent = userProgress.currentCourse.title;
+            document.getElementById('certificateCourseName').textContent = userProgress.currentCourse.title;
+            document.getElementById('earnedScore').textContent = '120';
+            document.getElementById('currentStreak').textContent = userProgress.streak;
+            
+            updateUI();
+        }
+
+        function backToCourses() {
+            document.getElementById('learningScreen').classList.add('hidden');
+            document.getElementById('completionScreen').classList.add('hidden');
+            document.getElementById('courseScreen').classList.remove('hidden');
+            
+            generateCourseList();
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = userProgress.score;
+            document.getElementById('streak').textContent = userProgress.streak;
+            document.getElementById('lives').textContent = userProgress.lives;
+        }
+
+        function showCustomModal(title, message, callback) {
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <h3 class="text-xl font-bold mb-4">${title}</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-6">${message}</p>
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeModal()" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-base">
+                        取消
+                    </button>
+                    <button onclick="closeModal(); ${callback ? callback.name + '()' : ''}" class="px-4 py-2 bg-primary text-white hover:bg-purple-700 rounded text-base">
+                        確定
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        // 顯示姓名輸入對話框
+        function showNameInputDialog(callback) {
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <h3 class="text-xl font-bold mb-4">📜 證書個人資訊</h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">請輸入您希望在證書上顯示的姓名：</p>
+                <input type="text" id="certificateName" placeholder="請輸入您的姓名" 
+                       value="${userProgress.userName}" 
+                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg mb-6 text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeModal()" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-base">
+                        取消
+                    </button>
+                    <button onclick="confirmName('${callback.name}')" class="px-4 py-2 bg-primary text-white hover:bg-purple-700 rounded text-base">
+                        生成證書
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            
+            // 聚焦到輸入框
+            setTimeout(() => {
+                document.getElementById('certificateName').focus();
+            }, 100);
+            
+            // 支持Enter鍵確認
+            document.getElementById('certificateName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    confirmName(callback.name);
+                }
+            });
+        }
+
+        function confirmName(callbackName) {
+            const nameInput = document.getElementById('certificateName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                // 顯示錯誤提示
+                nameInput.classList.add('border-red-500');
+                nameInput.placeholder = '請輸入姓名';
+                return;
+            }
+            
+            // 儲存用戶姓名
+            userProgress.userName = name;
+            closeModal();
+            
+            // 執行對應的證書生成函數
+            if (callbackName === 'generateCourseCertificateWithName') {
+                generateCourseCertificateWithName();
+            } else if (callbackName === 'generateCertificateWithName') {
+                generateCertificateWithName();
+            } else if (callbackName.startsWith('downloadCourseCertificateWithName_')) {
+                const courseId = callbackName.split('_')[1];
+                downloadCourseCertificateWithName(courseId);
+            }
+        }
+
+        function generateCertificate() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // 設置字體（使用內建字體）
+            doc.setFont("helvetica");
+
+            // 添加裝飾邊框
+            doc.setLineWidth(5);
+            doc.setDrawColor(212, 175, 55); // heritage-gold
+            doc.rect(10, 10, 190, 277);
+
+            doc.setLineWidth(2);
+            doc.setDrawColor(220, 20, 60); // heritage-red
+            doc.rect(15, 15, 180, 267);
+
+            // 標題
+            doc.setFontSize(28);
+            doc.setTextColor(93, 92, 222); // primary color
+            doc.text('Cultural Heritage Academy', 105, 50, { align: 'center' });
+
+            doc.setFontSize(24);
+            doc.setTextColor(212, 175, 55); // heritage-gold
+            doc.text('Certificate of Completion', 105, 70, { align: 'center' });
+
+            // 內容
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('This is to certify that', 105, 100, { align: 'center' });
+
+            doc.setFontSize(20);
+            doc.setTextColor(93, 92, 222);
+            doc.text('Heritage Scholar', 105, 120, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('has successfully completed all courses in', 105, 140, { align: 'center' });
+
+            doc.setFontSize(18);
+            doc.setTextColor(212, 175, 55);
+            doc.text('Intangible Cultural Heritage Studies', 105, 160, { align: 'center' });
+
+            doc.setFontSize(14);
+            doc.text('Total Score: ' + userProgress.score + ' points', 105, 180, { align: 'center' });
+            doc.text('Courses Completed: ' + userProgress.completedCourses.length + '/' + courses.length, 105, 195, { align: 'center' });
+
+            // 日期
+            const currentDate = new Date().toLocaleDateString('zh-TW');
+            doc.setFontSize(12);
+            doc.text('Date: ' + currentDate, 105, 220, { align: 'center' });
+
+            // 簽名區域
+            doc.setFontSize(14);
+            doc.text('Cultural Heritage Academy', 105, 250, { align: 'center' });
+            doc.text('Director of Studies', 105, 265, { align: 'center' });
+
+            // 下載PDF
+            doc.save('Cultural_Heritage_Certificate.pdf');
+        }
+
+        // 生成單個課程證書
+        function generateCourseCertificate() {
+            const course = userProgress.currentCourse;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // 設置字體
+            doc.setFont("helvetica");
+
+            // 添加裝飾邊框
+            doc.setLineWidth(5);
+            doc.setDrawColor(212, 175, 55); // heritage-gold
+            doc.rect(10, 10, 190, 277);
+
+            doc.setLineWidth(2);
+            doc.setDrawColor(220, 20, 60); // heritage-red
+            doc.rect(15, 15, 180, 267);
+
+            // 標題
+            doc.setFontSize(28);
+            doc.setTextColor(93, 92, 222); // primary color
+            doc.text('Cultural Heritage Academy', 105, 45, { align: 'center' });
+
+            doc.setFontSize(22);
+            doc.setTextColor(212, 175, 55); // heritage-gold
+            doc.text('Course Completion Certificate', 105, 65, { align: 'center' });
+
+            // 課程圖標（使用文字代替）
+            doc.setFontSize(40);
+            doc.text(course.icon, 105, 95, { align: 'center' });
+
+            // 內容
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('This is to certify that', 105, 115, { align: 'center' });
+
+            doc.setFontSize(20);
+            doc.setTextColor(93, 92, 222);
+            doc.text('Heritage Scholar', 105, 135, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('has successfully completed the course', 105, 155, { align: 'center' });
+
+            // 課程名稱
+            doc.setFontSize(18);
+            doc.setTextColor(212, 175, 55);
+            doc.text(course.title, 105, 175, { align: 'center' });
+
+            // 課程描述
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(course.description, 105, 190, { align: 'center' });
+
+            // 課程詳情
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Questions Completed: ' + course.questions.length, 105, 210, { align: 'center' });
+            doc.text('Course Score: 120 points', 105, 225, { align: 'center' });
+
+            // 日期
+            const currentDate = new Date().toLocaleDateString('zh-TW');
+            doc.setFontSize(12);
+            doc.text('Completion Date: ' + currentDate, 105, 245, { align: 'center' });
+
+            // 簽名區域
+            doc.setFontSize(14);
+            doc.text('Cultural Heritage Academy', 105, 265, { align: 'center' });
+            doc.text('Course Instructor', 105, 280, { align: 'center' });
+
+            // 下載PDF
+            const fileName = `${course.title.replace(/\s+/g, '_')}_Certificate.pdf`;
+            doc.save(fileName);
+        }
+
+        // 從課程列表下載證書
+        function downloadCourseCertificate(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // 設置字體
+            doc.setFont("helvetica");
+
+            // 添加裝飾邊框
+            doc.setLineWidth(5);
+            doc.setDrawColor(212, 175, 55); // heritage-gold
+            doc.rect(10, 10, 190, 277);
+
+            doc.setLineWidth(2);
+            doc.setDrawColor(220, 20, 60); // heritage-red
+            doc.rect(15, 15, 180, 267);
+
+            // 標題
+            doc.setFontSize(28);
+            doc.setTextColor(93, 92, 222); // primary color
+            doc.text('Cultural Heritage Academy', 105, 45, { align: 'center' });
+
+            doc.setFontSize(22);
+            doc.setTextColor(212, 175, 55); // heritage-gold
+            doc.text('Course Completion Certificate', 105, 65, { align: 'center' });
+
+            // 課程圖標
+            doc.setFontSize(40);
+            doc.text(course.icon, 105, 95, { align: 'center' });
+
+            // 內容
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('This is to certify that', 105, 115, { align: 'center' });
+
+            doc.setFontSize(20);
+            doc.setTextColor(93, 92, 222);
+            doc.text('Heritage Scholar', 105, 135, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('has successfully completed the course', 105, 155, { align: 'center' });
+
+            // 課程名稱
+            doc.setFontSize(18);
+            doc.setTextColor(212, 175, 55);
+            doc.text(course.title, 105, 175, { align: 'center' });
+
+            // 課程描述
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(course.description, 105, 190, { align: 'center' });
+
+            // 課程詳情
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Questions Completed: ' + course.questions.length, 105, 210, { align: 'center' });
+            doc.text('Course Score: 120 points', 105, 225, { align: 'center' });
+
+            // 日期
+            const currentDate = new Date().toLocaleDateString('zh-TW');
+            doc.setFontSize(12);
+            doc.text('Completion Date: ' + currentDate, 105, 245, { align: 'center' });
+
+            // 簽名區域
+            doc.setFontSize(14);
+            doc.text('Cultural Heritage Academy', 105, 265, { align: 'center' });
+            doc.text('Course Instructor', 105, 280, { align: 'center' });
+
+            // 下載PDF
+            const fileName = `${course.title.replace(/\s+/g, '_')}_Certificate.pdf`;
+            doc.save(fileName);
+        }
+
+        // 帶姓名的證書生成函數
+        function generateCertificateWithName() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // 設置字體
+            doc.setFont("helvetica");
+
+            // 添加裝飾邊框
+            doc.setLineWidth(5);
+            doc.setDrawColor(212, 175, 55); // heritage-gold
+            doc.rect(10, 10, 190, 277);
+
+            doc.setLineWidth(2);
+            doc.setDrawColor(220, 20, 60); // heritage-red
+            doc.rect(15, 15, 180, 267);
+
+            // 標題
+            doc.setFontSize(28);
+            doc.setTextColor(93, 92, 222); // primary color
+            doc.text('Cultural Heritage Academy', 105, 50, { align: 'center' });
+
+            doc.setFontSize(24);
+            doc.setTextColor(212, 175, 55); // heritage-gold
+            doc.text('Certificate of Completion', 105, 70, { align: 'center' });
+
+            // 內容
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('This is to certify that', 105, 100, { align: 'center' });
+
+            doc.setFontSize(20);
+            doc.setTextColor(93, 92, 222);
+            doc.text(userProgress.userName, 105, 120, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('has successfully completed all courses in', 105, 140, { align: 'center' });
+
+            doc.setFontSize(18);
+            doc.setTextColor(212, 175, 55);
+            doc.text('Intangible Cultural Heritage Studies', 105, 160, { align: 'center' });
+
+            doc.setFontSize(14);
+            doc.text('Total Score: ' + userProgress.score + ' points', 105, 180, { align: 'center' });
+            doc.text('Courses Completed: ' + userProgress.completedCourses.length + '/' + courses.length, 105, 195, { align: 'center' });
+
+            // 日期
+            const currentDate = new Date().toLocaleDateString('zh-TW');
+            doc.setFontSize(12);
+            doc.text('Date: ' + currentDate, 105, 220, { align: 'center' });
+
+            // 簽名區域
+            doc.setFontSize(14);
+            doc.text('Cultural Heritage Academy', 105, 250, { align: 'center' });
+            doc.text('Director of Studies', 105, 265, { align: 'center' });
+
+            // 下載PDF
+            const fileName = `${userProgress.userName.replace(/\s+/g, '_')}_Cultural_Heritage_Certificate.pdf`;
+            doc.save(fileName);
+        }
+
+        function generateCourseCertificateWithName() {
+            const course = userProgress.currentCourse;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // 設置字體
+            doc.setFont("helvetica");
+
+            // 添加裝飾邊框
+            doc.setLineWidth(5);
+            doc.setDrawColor(212, 175, 55); // heritage-gold
+            doc.rect(10, 10, 190, 277);
+
+            doc.setLineWidth(2);
+            doc.setDrawColor(220, 20, 60); // heritage-red
+            doc.rect(15, 15, 180, 267);
+
+            // 標題
+            doc.setFontSize(28);
+            doc.setTextColor(93, 92, 222); // primary color
+            doc.text('Cultural Heritage Academy', 105, 45, { align: 'center' });
+
+            doc.setFontSize(22);
+            doc.setTextColor(212, 175, 55); // heritage-gold
+            doc.text('Course Completion Certificate', 105, 65, { align: 'center' });
+
+            // 課程圖標
+            doc.setFontSize(40);
+            doc.text(course.icon, 105, 95, { align: 'center' });
+
+            // 內容
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('This is to certify that', 105, 115, { align: 'center' });
+
+            doc.setFontSize(20);
+            doc.setTextColor(93, 92, 222);
+            doc.text(userProgress.userName, 105, 135, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('has successfully completed the course', 105, 155, { align: 'center' });
+
+            // 課程名稱
+            doc.setFontSize(18);
+            doc.setTextColor(212, 175, 55);
+            doc.text(course.title, 105, 175, { align: 'center' });
+
+            // 課程描述
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(course.description, 105, 190, { align: 'center' });
+
+            // 課程詳情
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Questions Completed: ' + course.questions.length, 105, 210, { align: 'center' });
+            doc.text('Course Score: 120 points', 105, 225, { align: 'center' });
+
+            // 日期
+            const currentDate = new Date().toLocaleDateString('zh-TW');
+            doc.setFontSize(12);
+            doc.text('Completion Date: ' + currentDate, 105, 245, { align: 'center' });
+
+            // 簽名區域
+            doc.setFontSize(14);
+            doc.text('Cultural Heritage Academy', 105, 265, { align: 'center' });
+            doc.text('Course Instructor', 105, 280, { align: 'center' });
+
+            // 下載PDF
+            const fileName = `${userProgress.userName.replace(/\s+/g, '_')}_${course.title.replace(/\s+/g, '_')}_Certificate.pdf`;
+            doc.save(fileName);
+        }
+
+        function downloadCourseCertificateWithName(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // 設置字體
+            doc.setFont("helvetica");
+
+            // 添加裝飾邊框
+            doc.setLineWidth(5);
+            doc.setDrawColor(212, 175, 55); // heritage-gold
+            doc.rect(10, 10, 190, 277);
+
+            doc.setLineWidth(2);
+            doc.setDrawColor(220, 20, 60); // heritage-red
+            doc.rect(15, 15, 180, 267);
+
+            // 標題
+            doc.setFontSize(28);
+            doc.setTextColor(93, 92, 222); // primary color
+            doc.text('Cultural Heritage Academy', 105, 45, { align: 'center' });
+
+            doc.setFontSize(22);
+            doc.setTextColor(212, 175, 55); // heritage-gold
+            doc.text('Course Completion Certificate', 105, 65, { align: 'center' });
+
+            // 課程圖標
+            doc.setFontSize(40);
+            doc.text(course.icon, 105, 95, { align: 'center' });
+
+            // 內容
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('This is to certify that', 105, 115, { align: 'center' });
+
+            doc.setFontSize(20);
+            doc.setTextColor(93, 92, 222);
+            doc.text(userProgress.userName, 105, 135, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('has successfully completed the course', 105, 155, { align: 'center' });
+
+            // 課程名稱
+            doc.setFontSize(18);
+            doc.setTextColor(212, 175, 55);
+            doc.text(course.title, 105, 175, { align: 'center' });
+
+            // 課程描述
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(course.description, 105, 190, { align: 'center' });
+
+            // 課程詳情
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Questions Completed: ' + course.questions.length, 105, 210, { align: 'center' });
+            doc.text('Course Score: 120 points', 105, 225, { align: 'center' });
+
+            // 日期
+            const currentDate = new Date().toLocaleDateString('zh-TW');
+            doc.setFontSize(12);
+            doc.text('Completion Date: ' + currentDate, 105, 245, { align: 'center' });
+
+            // 簽名區域
+            doc.setFontSize(14);
+            doc.text('Cultural Heritage Academy', 105, 265, { align: 'center' });
+            doc.text('Course Instructor', 105, 280, { align: 'center' });
+
+            // 下載PDF
+            const fileName = `${userProgress.userName.replace(/\s+/g, '_')}_${course.title.replace(/\s+/g, '_')}_Certificate.pdf`;
+            doc.save(fileName);
+        }
+
+        // 處理課程列表中的證書下載請求
+        function requestCourseCertificate(courseId) {
+            // 創建一個臨時的回調函數
+            window.tempCertificateCallback = function() {
+                return `downloadCourseCertificateWithName_${courseId}`;
+            };
+            showNameInputDialog(window.tempCertificateCallback);
+        }
+
+        // 顯示師父推薦
+        function showMasterRecommendations() {
+            const currentCourseId = userProgress.currentCourse.id;
+            const courseMasters = masters[currentCourseId] || [];
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="max-w-2xl">
+                    <h3 class="text-2xl font-bold mb-4 text-center">🎯 ${userProgress.currentCourse.title} 領域師父</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6 text-center">
+                        我們為您推薦在此領域經驗豐富的專業師父，每位都有獨特的教學風格和深厚的文化底蘊。
+                    </p>
+                    
+                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                        ${courseMasters.map(master => `
+                            <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                                 onclick="showMasterDetails('${master.id}')">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-2xl text-white font-bold">
+                                        ${master.name.charAt(0)}
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-bold text-gray-900 dark:text-white">${master.name}</h4>
+                                        <p class="text-purple-600 dark:text-purple-400 font-medium">${master.title}</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                                            📍 ${master.location} | 🎓 ${master.experience} 經驗
+                                        </p>
+                                        <div class="flex flex-wrap gap-1 mt-2">
+                                            ${master.specialties.slice(0, 2).map(specialty => 
+                                                `<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs rounded-full">${specialty}</span>`
+                                            ).join('')}
+                                        </div>
+                                    </div>
+                                    <div class="text-purple-500 text-xl">→</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <button onclick="closeModal()" 
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        // 顯示師父詳細資訊
+        function showMasterDetails(masterId) {
+            // 從所有師父中找到對應的師父
+            let masterData = null;
+            for (const courseId in masters) {
+                const master = masters[courseId].find(m => m.id === masterId);
+                if (master) {
+                    masterData = master;
+                    break;
+                }
+            }
+            
+            if (!masterData) return;
+            
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="max-w-3xl">
+                    <div class="text-center mb-6">
+                        <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-3xl text-white font-bold mx-auto mb-4">
+                            ${masterData.name.charAt(0)}
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">${masterData.name}</h3>
+                        <p class="text-lg text-purple-600 dark:text-purple-400 font-medium">${masterData.title}</p>
+                        <p class="text-gray-600 dark:text-gray-300">📍 ${masterData.location} | 🎓 ${masterData.experience} 教學經驗</p>
+                    </div>
+                    
+                    <div class="space-y-6 max-h-96 overflow-y-auto">
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">📝 師父簡介</h4>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">${masterData.description}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">🎯 專業領域</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${masterData.specialties.map(specialty => 
+                                    `<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">${specialty}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">🏆 主要成就</h4>
+                            <ul class="space-y-1">
+                                ${masterData.achievements.map(achievement => 
+                                    `<li class="text-gray-700 dark:text-gray-300 text-sm flex items-start space-x-2">
+                                        <span class="text-yellow-500 mt-1">•</span>
+                                        <span>${achievement}</span>
+                                    </li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">👨‍🏫 教學風格</h4>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">${masterData.teachingStyle}</p>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900 dark:to-pink-900 rounded-lg p-4">
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">📧 聯繫方式</h4>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm mb-3">
+                                想要拜師學藝嗎？您可以透過以下方式與師父聯繫：
+                            </p>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="contactMaster('${masterData.contact}')" 
+                                        class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300">
+                                    📧 發送聯繫郵件
+                                </button>
+                                <span class="text-gray-600 dark:text-gray-400 text-sm">${masterData.contact}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-center space-x-3">
+                        <button onclick="showMasterRecommendations()" 
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            ← 返回師父列表
+                        </button>
+                        <button onclick="closeModal()" 
+                                class="bg-primary hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        // 聯繫師父功能
+        function contactMaster(email) {
+            const subject = encodeURIComponent(`來自文化傳承學院的學習者 - ${userProgress.currentCourse.title}課程`);
+            const body = encodeURIComponent(`親愛的師父您好，
+
+我是${userProgress.userName}，剛剛完成了文化傳承學院的「${userProgress.currentCourse.title}」課程。
+
+我對您的專業領域非常感興趣，希望能有機會跟隨您深入學習傳統文化技藝。
+
+我的學習背景：
+- 已完成課程：${userProgress.completedCourses.length}個
+- 總學習積分：${userProgress.score}分
+- 學習態度：認真刻苦，渴望傳承文化精髓
+
+期待您的回覆，謝謝！
+
+此致
+敬禮
+
+${userProgress.userName}
+來自文化傳承學院`);
+            
+            const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+            window.open(mailtoLink);
+        }
+
+        // 工藝市集商品數據
+        const marketplaceItems = [
+            // 傳統手工藝作品
+            {
+                id: 'item-1',
+                title: '手工景泰藍花瓶',
+                category: 'traditional-crafts',
+                price: 2800,
+                seller: '李景泰工作室',
+                sellerType: 'master',
+                location: '北京',
+                image: '🏺',
+                description: '採用傳統景泰藍工藝製作，銅胎掐絲琺瑯，花卉圖案精美，適合收藏或裝飾。',
+                specifications: ['高度：25cm', '直徑：15cm', '重量：1.2kg'],
+                materials: ['紫銅', '琺瑯彩', '金絲'],
+                craftTime: '15天',
+                condition: '全新',
+                featured: true
+            },
+            {
+                id: 'item-2',
+                title: '立體折紙藝術-千紙鶴編織',
+                category: 'traditional-crafts',
+                price: 180,
+                seller: '摺紙愛好者小林',
+                sellerType: 'student',
+                location: '東京',
+                image: '🐦',
+                description: '100隻手工摺疊千紙鶴組成的立體藝術裝置，寓意和平與希望。',
+                specifications: ['尺寸：30x30x20cm', '數量：100隻', '框架：木質'],
+                materials: ['和紙', '金銀紙', '木框'],
+                craftTime: '7天',
+                condition: '全新'
+            },
+            // 民族音樂相關
+            {
+                id: 'item-3',
+                title: '手工製作古琴-仲尼式',
+                category: 'folk-music',
+                price: 15000,
+                seller: '蘇州古琴坊',
+                sellerType: 'master',
+                location: '蘇州',
+                image: '🎵',
+                description: '採用百年老杉木製作，音色清雅，適合演奏和收藏。',
+                specifications: ['長度：120cm', '寬度：20cm', '弦數：7根'],
+                materials: ['老杉木', '絲弦', '生漆'],
+                craftTime: '90天',
+                condition: '全新',
+                featured: true
+            },
+            {
+                id: 'item-4',
+                title: '愛爾蘭傳統風笛',
+                category: 'folk-music',
+                price: 3200,
+                seller: 'Celtic Music Workshop',
+                sellerType: 'master',
+                location: '都柏林',
+                image: '🎭',
+                description: '手工製作的愛爾蘭風笛，音質純正，適合演奏傳統凱爾特音樂。',
+                specifications: ['材質：黑檀木', '調性：D調', '配件齊全'],
+                materials: ['黑檀木', '羊皮囊', '銅管'],
+                craftTime: '30天',
+                condition: '全新'
+            },
+            // 節慶用品
+            {
+                id: 'item-5',
+                title: '手工剪紙作品集-十二生肖',
+                category: 'festivals',
+                price: 450,
+                seller: '民俗藝術學生會',
+                sellerType: 'student',
+                location: '福建',
+                image: '🎊',
+                description: '傳統剪紙技法製作的十二生肖系列，適合春節裝飾。',
+                specifications: ['尺寸：20x20cm每幅', '數量：12幅', '裝裱：卷軸裝'],
+                materials: ['紅紙', '金紙', '絲綢卷軸'],
+                craftTime: '5天',
+                condition: '全新'
+            },
+            {
+                id: 'item-6',
+                title: '印度色彩節有機顏料套裝',
+                category: 'festivals',
+                price: 280,
+                seller: 'Holi Colors India',
+                sellerType: 'master',
+                location: '新德里',
+                image: '🌈',
+                description: '純天然有機顏料，安全無毒，適合色彩節慶祝活動。',
+                specifications: ['顏色：8種', '重量：100g每包', '包裝：環保袋'],
+                materials: ['天然植物染料', '玉米澱粉', '有機添加劑'],
+                craftTime: '3天',
+                condition: '全新'
+            },
+            // 烹飪藝術
+            {
+                id: 'item-7',
+                title: '法式料理醬料套裝',
+                category: 'culinary-arts',
+                price: 680,
+                seller: 'Chef Pierre工作室',
+                sellerType: 'master',
+                location: '巴黎',
+                image: '🍜',
+                description: '經典法式五大母醬手工製作套裝，包含詳細製作說明。',
+                specifications: ['數量：5種醬料', '容量：200ml每瓶', '保存期：3個月'],
+                materials: ['有機奶油', '天然香草', '法式高湯'],
+                craftTime: '2天',
+                condition: '全新',
+                featured: true
+            },
+            {
+                id: 'item-8',
+                title: '懷石料理器皿組合',
+                category: 'culinary-arts',
+                price: 2400,
+                seller: '京都陶藝工房',
+                sellerType: 'student',
+                location: '京都',
+                image: '🏺',
+                description: '手工陶瓷器皿，適合懷石料理擺盤，體現日式美學。',
+                specifications: ['件數：12件', '材質：陶瓷', '風格：簡約'],
+                materials: ['優質陶土', '天然釉料', '手工拉坯'],
+                craftTime: '20天',
+                condition: '全新'
+            },
+            // 口述傳統相關
+            {
+                id: 'item-9',
+                title: '手繪插圖版格林童話集',
+                category: 'storytelling',
+                price: 1200,
+                seller: '德國插畫師工作室',
+                sellerType: 'student',
+                location: '法蘭克福',
+                image: '📚',
+                description: '手工繪製插圖的格林童話合集，限量版收藏品。',
+                specifications: ['頁數：300頁', '插圖：50幅', '裝訂：精裝'],
+                materials: ['手工紙', '天然顏料', '皮革封面'],
+                craftTime: '60天',
+                condition: '全新'
+            },
+            {
+                id: 'item-10',
+                title: '中國傳統評書道具套裝',
+                category: 'storytelling',
+                price: 420,
+                seller: '說書人傳習所',
+                sellerType: 'master',
+                location: '山西',
+                image: '🎭',
+                description: '傳統評書表演用具，包含驚堂木、摺扇等道具。',
+                specifications: ['件數：5件', '材質：木質', '風格：傳統'],
+                materials: ['檀木', '竹扇骨', '絹布'],
+                craftTime: '10天',
+                condition: '全新'
+            },
+            // 武術相關
+            {
+                id: 'item-11',
+                title: '手工太極劍',
+                category: 'martial-arts',
+                price: 3600,
+                seller: '溫縣太極世家',
+                sellerType: 'master',
+                location: '河南溫縣',
+                image: '🥋',
+                description: '傳統工藝打造的太極劍，劍身柔韌，適合太極劍練習。',
+                specifications: ['長度：90cm', '重量：500g', '材質：彈簧鋼'],
+                materials: ['優質鋼材', '檀木劍柄', '絲綢劍穗'],
+                craftTime: '25天',
+                condition: '全新',
+                featured: true
+            },
+            {
+                id: 'item-12',
+                title: '沖繩空手道訓練用具組',
+                category: 'martial-arts',
+                price: 890,
+                seller: '沖繩武道館',
+                sellerType: 'student',
+                location: '沖繩',
+                image: '🥊',
+                description: '傳統空手道訓練器具，包含木人樁、沙袋等。',
+                specifications: ['件數：3件', '材質：橡木', '尺寸：標準規格'],
+                materials: ['橡木', '黃沙', '帆布'],
+                craftTime: '8天',
+                condition: '全新'
+            }
+        ];
+
+        // 顯示工藝市集
+        function showMarketplace() {
+            // 隱藏所有其他畫面
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('courseScreen').classList.add('hidden');
+            document.getElementById('learningScreen').classList.add('hidden');
+            document.getElementById('completionScreen').classList.add('hidden');
+            
+            // 顯示市集畫面
+            showMarketplaceScreen();
+        }
+
+        function showMarketplaceScreen() {
+            const main = document.querySelector('main');
+            main.innerHTML = `
+                <div id="marketplaceScreen">
+                    <!-- 市集頭部 -->
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-900 dark:text-white">🛒 工藝市集</h2>
+                                <p class="text-gray-600 dark:text-gray-300 mt-2">發現並購買來自師父和學徒的精美手工作品</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                ${userProgress.completedCourses.length > 0 ? `
+                                    <button onclick="showSellForm()" 
+                                            class="bg-heritage-gold hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-base">
+                                        💰 我要販售
+                                    </button>
+                                ` : ''}
+                                <button onclick="backToHome()" 
+                                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-base">
+                                    🏠 返回首頁
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 篩選和搜尋 -->
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex flex-wrap gap-4 items-center">
+                                <div class="flex-1 min-w-64">
+                                    <input type="text" id="searchInput" placeholder="搜尋商品名稱或描述..." 
+                                           class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                </div>
+                                <div class="flex space-x-2">
+                                    <select id="categoryFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        <option value="">所有分類</option>
+                                        <option value="traditional-crafts">傳統手工藝</option>
+                                        <option value="folk-music">民族音樂</option>
+                                        <option value="festivals">傳統節慶</option>
+                                        <option value="culinary-arts">烹飪藝術</option>
+                                        <option value="storytelling">口述傳統</option>
+                                        <option value="martial-arts">武術傳統</option>
+                                    </select>
+                                    <select id="priceFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        <option value="">價格範圍</option>
+                                        <option value="0-500">NT$ 0 - 500</option>
+                                        <option value="500-1000">NT$ 500 - 1,000</option>
+                                        <option value="1000-3000">NT$ 1,000 - 3,000</option>
+                                        <option value="3000+">NT$ 3,000+</option>
+                                    </select>
+                                    <select id="sellerFilter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        <option value="">所有賣家</option>
+                                        <option value="master">師父作品</option>
+                                        <option value="student">學徒作品</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 精選商品 -->
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold mb-4">⭐ 精選商品</h3>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="featuredItems">
+                            <!-- 精選商品將由JavaScript生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 所有商品 -->
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">🎨 所有商品</h3>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="allItems">
+                            <!-- 所有商品將由JavaScript生成 -->
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            generateMarketplaceItems();
+            setupMarketplaceFilters();
+        }
+
+        function generateMarketplaceItems() {
+            // 生成精選商品
+            const featuredItems = marketplaceItems.filter(item => item.featured);
+            const featuredContainer = document.getElementById('featuredItems');
+            if (featuredContainer) {
+                featuredContainer.innerHTML = featuredItems.map(item => createItemCard(item, true)).join('');
+            }
+
+            // 生成所有商品
+            const allContainer = document.getElementById('allItems');
+            if (allContainer) {
+                allContainer.innerHTML = marketplaceItems.map(item => createItemCard(item, false)).join('');
+            }
+        }
+
+        function createItemCard(item, isFeatured = false) {
+            const categoryInfo = courses.find(c => c.id === item.category);
+            const sellerBadge = item.sellerType === 'master' ? 
+                '<span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs rounded-full">師父作品</span>' :
+                '<span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full">學徒作品</span>';
+
+            return `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer ${isFeatured ? 'ring-2 ring-heritage-gold' : ''}"
+                     onclick="showItemDetails('${item.id}')">
+                    ${isFeatured ? '<div class="bg-heritage-gold text-white text-center py-1 text-xs font-bold">精選商品</div>' : ''}
+                    
+                    <div class="p-4">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="text-4xl">${item.image}</div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold text-primary">NT$ ${item.price.toLocaleString()}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">${item.location}</div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">${item.title}</h4>
+                        
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">${item.description}</p>
+                        
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full">
+                                ${categoryInfo ? categoryInfo.icon + ' ' + categoryInfo.title : ''}
+                            </span>
+                            ${sellerBadge}
+                        </div>
+                        
+                        <div class="text-sm text-gray-600 dark:text-gray-300">
+                            <div class="flex items-center justify-between">
+                                <span>賣家：${item.seller}</span>
+                                <span>製作：${item.craftTime}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupMarketplaceFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const priceFilter = document.getElementById('priceFilter');
+            const sellerFilter = document.getElementById('sellerFilter');
+
+            const applyFilters = () => {
+                let filteredItems = [...marketplaceItems];
+
+                // 搜尋過濾
+                const searchTerm = searchInput.value.toLowerCase();
+                if (searchTerm) {
+                    filteredItems = filteredItems.filter(item => 
+                        item.title.toLowerCase().includes(searchTerm) || 
+                        item.description.toLowerCase().includes(searchTerm) ||
+                        item.seller.toLowerCase().includes(searchTerm)
+                    );
+                }
+
+                // 分類過濾
+                const category = categoryFilter.value;
+                if (category) {
+                    filteredItems = filteredItems.filter(item => item.category === category);
+                }
+
+                // 價格過濾
+                const priceRange = priceFilter.value;
+                if (priceRange) {
+                    if (priceRange === '0-500') {
+                        filteredItems = filteredItems.filter(item => item.price <= 500);
+                    } else if (priceRange === '500-1000') {
+                        filteredItems = filteredItems.filter(item => item.price > 500 && item.price <= 1000);
+                    } else if (priceRange === '1000-3000') {
+                        filteredItems = filteredItems.filter(item => item.price > 1000 && item.price <= 3000);
+                    } else if (priceRange === '3000+') {
+                        filteredItems = filteredItems.filter(item => item.price > 3000);
+                    }
+                }
+
+                // 賣家類型過濾
+                const sellerType = sellerFilter.value;
+                if (sellerType) {
+                    filteredItems = filteredItems.filter(item => item.sellerType === sellerType);
+                }
+
+                // 更新顯示
+                const allContainer = document.getElementById('allItems');
+                if (allContainer) {
+                    allContainer.innerHTML = filteredItems.map(item => createItemCard(item, false)).join('');
+                }
+            };
+
+            // 添加事件監聽器
+            searchInput.addEventListener('input', applyFilters);
+            categoryFilter.addEventListener('change', applyFilters);
+            priceFilter.addEventListener('change', applyFilters);
+            sellerFilter.addEventListener('change', applyFilters);
+        }
+
+        function showItemDetails(itemId) {
+            const item = marketplaceItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            const categoryInfo = courses.find(c => c.id === item.category);
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="max-w-3xl">
+                    <div class="flex items-start space-x-6 mb-6">
+                        <div class="text-6xl">${item.image}</div>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">${item.title}</h3>
+                            <div class="flex items-center space-x-3 mb-3">
+                                <span class="px-3 py-1 ${categoryInfo.color.replace('bg-', 'bg-opacity-20 bg-')} ${categoryInfo.color.replace('bg-', 'text-')} rounded-full text-sm">
+                                    ${categoryInfo.icon} ${categoryInfo.title}
+                                </span>
+                                <span class="px-3 py-1 ${item.sellerType === 'master' ? 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300' : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'} rounded-full text-sm">
+                                    ${item.sellerType === 'master' ? '師父作品' : '學徒作品'}
+                                </span>
+                            </div>
+                            <div class="text-3xl font-bold text-primary mb-2">NT$ ${item.price.toLocaleString()}</div>
+                            <div class="text-gray-600 dark:text-gray-300">
+                                <div class="flex items-center space-x-4 text-sm">
+                                    <span>📍 ${item.location}</span>
+                                    <span>🛠️ ${item.craftTime}</span>
+                                    <span>✨ ${item.condition}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">📝 商品描述</h4>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">${item.description}</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white mb-2">📏 規格說明</h4>
+                                <ul class="space-y-1">
+                                    ${item.specifications.map(spec => 
+                                        `<li class="text-gray-700 dark:text-gray-300 text-sm">• ${spec}</li>`
+                                    ).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white mb-2">🎨 材料工藝</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${item.materials.map(material => 
+                                        `<span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded-full">${material}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                            <h4 class="font-bold text-gray-900 dark:text-white mb-2">👤 賣家資訊</h4>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">${item.seller}</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-300">來自 ${item.location}</div>
+                                </div>
+                                <button onclick="contactSeller('${item.id}')" 
+                                        class="bg-primary hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300">
+                                    💬 聯繫賣家
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-3">
+                        <button onclick="closeModal()" 
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            關閉
+                        </button>
+                        <button onclick="purchaseItem('${item.id}')" 
+                                class="bg-heritage-gold hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            🛒 我要購買
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function contactSeller(itemId) {
+            const item = marketplaceItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            const subject = encodeURIComponent(`關於您的商品「${item.title}」詢問`);
+            const body = encodeURIComponent(`您好，
+
+我在文化傳承學院工藝市集看到您的商品「${item.title}」，對此很感興趣。
+
+希望能進一步了解：
+1. 商品的詳細情況
+2. 購買和交付方式
+3. 是否還有其他類似作品
+
+期待您的回覆，謝謝！
+
+此致
+敬禮
+
+${userProgress.userName || '市集訪客'}
+來自文化傳承學院工藝市集`);
+
+            const mailtoLink = `mailto:seller@heritage-market.com?subject=${subject}&body=${body}`;
+            window.open(mailtoLink);
+        }
+
+        function purchaseItem(itemId) {
+            const item = marketplaceItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            closeModal();
+            
+            setTimeout(() => {
+                showCustomModal('購買確認', `您確定要購買「${item.title}」嗎？\n價格：NT$ ${item.price.toLocaleString()}\n\n請注意：這是示範功能，實際購買需要完整的支付系統。`, () => {
+                    showCustomModal('購買成功', `恭喜您成功購買「${item.title}」！\n\n賣家將會盡快與您聯繫安排交付事宜。感謝您支持傳統工藝文化！`, null);
+                });
+            }, 100);
+        }
+
+        function showSellForm() {
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="max-w-2xl">
+                    <h3 class="text-2xl font-bold mb-6 text-center">💰 上架您的作品</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6 text-center">
+                        完成課程的學習者可以在市集上販售自己的手工作品
+                    </p>
+
+                    <form id="sellForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">商品名稱</label>
+                            <input type="text" id="sellTitle" placeholder="為您的作品取個好名字..." 
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">作品分類</label>
+                            <select id="sellCategory" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                <option value="">請選擇分類</option>
+                                ${userProgress.completedCourses.map(courseId => {
+                                    const course = courses.find(c => c.id === courseId);
+                                    return `<option value="${courseId}">${course.icon} ${course.title}</option>`;
+                                }).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">售價 (NT$)</label>
+                            <input type="number" id="sellPrice" placeholder="設定您的售價..." min="1"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">作品描述</label>
+                            <textarea id="sellDescription" rows="4" placeholder="詳細描述您的作品，包括製作過程、材料、特色等..."
+                                      class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">製作時間</label>
+                            <input type="text" id="sellCraftTime" placeholder="例如：7天、2週、1個月..."
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">所在地區</label>
+                            <input type="text" id="sellLocation" placeholder="您的所在城市..."
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-base bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        </div>
+                    </form>
+
+                    <div class="mt-6 flex justify-center space-x-3">
+                        <button onclick="closeModal()" 
+                                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            取消
+                        </button>
+                        <button onclick="submitSellForm()" 
+                                class="bg-heritage-gold hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                            上架商品
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function submitSellForm() {
+            const title = document.getElementById('sellTitle').value.trim();
+            const category = document.getElementById('sellCategory').value;
+            const price = document.getElementById('sellPrice').value;
+            const description = document.getElementById('sellDescription').value.trim();
+            const craftTime = document.getElementById('sellCraftTime').value.trim();
+            const location = document.getElementById('sellLocation').value.trim();
+
+            if (!title || !category || !price || !description || !craftTime || !location) {
+                showCustomModal('錯誤', '請填寫所有必要欄位。', null);
+                return;
+            }
+
+            closeModal();
+            
+            setTimeout(() => {
+                showCustomModal('上架成功', `恭喜！您的作品「${title}」已成功上架到工藝市集。\n\n我們會儘快審核您的商品，審核通過後將顯示在市集中。感謝您分享您的精美作品！`, null);
+            }, 100);
+        }
+
+        function backToHome() {
+            // 重新載入主頁面
+            location.reload();
+        }
+
+        // 初始化
+        updateUI();
+    </script>
+
+
+</body></html>
